@@ -11,6 +11,7 @@ import {
   FlatList,
   Button,
 } from 'react-native';
+// import {GiftedChat} from 'react-native-gifted-chat';
 
 export default class Chat extends Component {
   constructor(props) {

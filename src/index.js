@@ -1,5 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+import {View, Text} from 'react-native';
 import Chat from './screens/Chat';
 import Home from './screens/Home';
 
@@ -8,8 +10,8 @@ const BottomTab = () => {
   return (
     <>
       <Tab.Navigator>
-        <Tab.Screen component={Home} name="Home" />
-        <Tab.Screen component={Chat} name="Chat" />
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Chat" component={Chat} />
       </Tab.Navigator>
     </>
   );
