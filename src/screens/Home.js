@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, FlatList} from 'react-native';
 import {ListItem, SearchBar, Header} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
 
 const data = [
@@ -11,12 +12,16 @@ const data = [
   },
 ];
 
-export default function Home() {
+export default function Home(props) {
   return (
     <>
       <ScrollView>
         <Header
-          leftComponent={{icon: 'menu', color: '#000'}}
+          leftComponent={() => (
+            <TouchableOpacity>
+              <Icon name="ios-menu" color="#000" size={30} />
+            </TouchableOpacity>
+          )}
           centerComponent={{
             text: 'Home',
             style: {color: '#000', fontSize: 17, fontWeight: 'bold'},
@@ -30,7 +35,7 @@ export default function Home() {
         />
         <View style={{paddingHorizontal: 0, backgroundColor: '#fefefe'}}>
           <SearchBar
-            placeholder="Type Here..."
+            placeholder="Search your friends ..."
             lightTheme={true}
             inputContainerStyle={{
               backgroundColor: '#eee',

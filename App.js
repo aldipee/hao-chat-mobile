@@ -5,6 +5,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import MainHome from './src/index';
 import Home from './src/screens/Home';
+import SettingsDrawer from './src/screens/Drawwer';
+import Chat from './src/screens/Chat';
 
 const Stack = createStackNavigator();
 const App = () => {
@@ -15,6 +17,11 @@ const App = () => {
           <Stack.Screen
             name="Home"
             component={Home}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="SettingScreen"
+            component={SettingsDrawer}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
