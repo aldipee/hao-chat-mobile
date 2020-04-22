@@ -20,7 +20,7 @@ export default function Login(props) {
             .ref(`/UserList/${id}`)
             .once('value')
             .then(snapshot => {
-              props.navigation.navigate('Home', snapshot.val());
+              props.navigation.navigate('UploadImage', snapshot.val());
               console.log('User data: ', snapshot.val());
             });
         });

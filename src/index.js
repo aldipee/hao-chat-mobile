@@ -12,6 +12,7 @@ import Login from '../src/screens/Login';
 import Profile from '../src/screens/Profile';
 import Register from '../src/screens/Register';
 import SendPhone from '../src/screens/SendPhone';
+import UploadImage from '../src/screens/UploadImage';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,11 @@ const IndexHome = props => {
         <Stack.Screen
           name="Test"
           component={SendPhone}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="UploadImage"
+          component={UploadImage}
           options={{headerShown: false}}
         />
 
