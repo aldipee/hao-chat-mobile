@@ -1,9 +1,50 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text} from 'react-native';
 import {Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+// Redux
+import {connect} from 'react-redux';
+import {insertNewUser} from '../redux/actions/AuthAction';
 
-export default function Register(props) {
+function Register(props) {
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const onSubmit = () => {
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        auth().onAuthStateChanged(userData => {
+          database()
+            .ref('UserList/' + userData.uid)
+            .set({
+              name: fullName,
+              status: 'online',
+              email: email,
+              photo:
+                'https://cdn2.iconfinder.com/data/icons/men-women-from-all-over-the-world-1/93/man-woman-people-person-avatar-face-user_49-512.png',
+              uid: userData.uid,
+            })
+            .catch(error => console.log(error.message));
+        });
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!');
+        }
+
+        if (error.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!');
+        }
+
+        console.error(error);
+      });
+  };
+
   return (
     <View
       style={{
@@ -44,6 +85,7 @@ export default function Register(props) {
             borderRadius: 3,
             borderColor: '#d1d1d1',
           }}
+          onChangeText={text => setFullName(text)}
           label="Full Name"
           labelStyle={{fontSize: 13, marginBottom: 4}}
         />
@@ -57,6 +99,7 @@ export default function Register(props) {
             marginRight: 10,
             paddingBottom: 0,
           }}
+          onChangeText={text => setEmail(text)}
           inputContainerStyle={{
             borderBottomWidth: 1,
             borderTopWidth: 1,
@@ -78,6 +121,7 @@ export default function Register(props) {
             marginRight: 10,
             paddingBottom: 0,
           }}
+          onChangeText={text => setPhoneNumber(text)}
           inputContainerStyle={{
             borderBottomWidth: 1,
             borderTopWidth: 1,
@@ -89,8 +133,32 @@ export default function Register(props) {
           label="Phone Number"
           labelStyle={{fontSize: 13, marginBottom: 4}}
         />
+        <Input
+          placeholder="Your Passwrod"
+          leftIcon={<Icon name="md-call" size={24} color="#000" />}
+          inputStyle={{fontSize: 15, paddingBottom: 5}}
+          containerStyle={{marginVertical: 10}}
+          leftIconContainerStyle={{
+            marginLeft: 10,
+            marginRight: 10,
+            paddingBottom: 0,
+          }}
+          inputContainerStyle={{
+            borderBottomWidth: 1,
+            borderTopWidth: 1,
+            borderRightWidth: 1,
+            borderLeftWidth: 1,
+            borderRadius: 3,
+            borderColor: '#d1d1d1',
+          }}
+          label="Phone Number"
+          onChangeText={text => setPassword(text)}
+          labelStyle={{fontSize: 13, marginBottom: 4}}
+        />
+
         <View>
           <Button
+            onPress={onSubmit}
             type="outline"
             title="Register"
             buttonStyle={{backgroundColor: '#000'}}
@@ -102,3 +170,8 @@ export default function Register(props) {
     </View>
   );
 }
+
+export default connect(
+  null,
+  {insertNewUser},
+)(Register);
