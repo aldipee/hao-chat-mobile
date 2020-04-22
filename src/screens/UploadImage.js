@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Text, View, ScrollView, StyleSheet, Platform} from 'react-native';
 import {Card, Avatar, Button} from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
+// import storage from '@react-native-firebase/storage';
 
 class UploadImage extends Component {
   state = {
@@ -45,8 +46,27 @@ class UploadImage extends Component {
       }
     });
   };
+
+  uriToBlob = uri => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function() {
+        resolve(xhr.response);
+      };
+
+      xhr.onerror = function() {
+        reject(new Error('Error on upload image'));
+      };
+
+      xhr.responseType = 'blob';
+      xhr.open('GET', uri, true);
+      xhr.send(null);
+    });
+  };
+
   uploadPicture = async () => {
     console.log('mulai upload');
+    storage().ref('profile/maam.png');
   };
 
   render() {
@@ -69,7 +89,7 @@ class UploadImage extends Component {
             onPress={this.choosePicture}
             activeOpacity={0.7}
             source={{
-              uri: '',
+              uri: this.state.image.uri,
             }}
           />
 

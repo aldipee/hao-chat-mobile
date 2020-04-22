@@ -13,6 +13,7 @@ import Profile from '../src/screens/Profile';
 import Register from '../src/screens/Register';
 import SendPhone from '../src/screens/SendPhone';
 import UploadImage from '../src/screens/UploadImage';
+import MapView from './screens/MapView';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,11 @@ const IndexHome = props => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="MapView"
+          component={MapView}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="Login"
           component={Login}
