@@ -26,7 +26,11 @@ export default function Home(props) {
             text: 'Home',
             style: {color: '#000', fontSize: 17, fontWeight: 'bold'},
           }}
-          rightComponent={{icon: 'home', color: '#000'}}
+          rightComponent={
+            <TouchableOpacity>
+              <Icon name="ios-settings" color="#000" size={30} />
+            </TouchableOpacity>
+          }
           containerStyle={{
             height: 50,
             paddingBottom: 20,
@@ -61,23 +65,25 @@ export default function Home(props) {
             keyExtractor={(item, index) => index.toString()}
             data={[1, 2, 3, 4, 5, 6, 9, 1, 1, 1, 1, 1]}
             renderItem={({item, index}) => (
-              <ListItem
-                key={index}
-                containerStyle={{
-                  backgroundColor: '#fefefe',
-                  paddingHorizontal: 20,
-                  paddingVertical: 11,
-                }}
-                cont
-                leftAvatar={{
-                  rounded: true,
-                }}
-                title={'Aldi Pranata'}
-                titleStyle={{fontWeight: '700'}}
-                rightSubtitle={'09:30 PM'}
-                subtitle={'Hey, sup!'}
-                bottomDivider
-              />
+              <TouchableOpacity>
+                <ListItem
+                  key={index}
+                  containerStyle={{
+                    backgroundColor: '#fefefe',
+                    paddingHorizontal: 20,
+                    paddingVertical: 11,
+                  }}
+                  cont
+                  leftAvatar={{
+                    rounded: true,
+                  }}
+                  title={'Aldi Pranata'}
+                  titleStyle={{fontWeight: '700'}}
+                  rightSubtitle={'09:30 PM'}
+                  subtitle={'Hey, sup!'}
+                  bottomDivider
+                />
+              </TouchableOpacity>
             )}
           />
         </View>
