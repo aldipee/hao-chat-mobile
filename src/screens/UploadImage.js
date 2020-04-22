@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View, ScrollView, StyleSheet, Platform} from 'react-native';
 import {Card, Avatar, Button} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-picker';
 
 class UploadImage extends Component {
