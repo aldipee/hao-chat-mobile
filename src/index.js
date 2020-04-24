@@ -25,21 +25,38 @@ const IndexHome = props => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        {props.authData.isLogin ? (
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{headerShown: false}}
+          />
+        ) : (
+          <>
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{headerShown: false}}
+            />
+          </>
+        )}
+
+        <Stack.Screen
+          name="Room"
+          component={Chat}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="MapView"
           component={MapView}
           options={{headerShown: false}}
         />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Register"
-          component={Register}
-          options={{headerShown: false}}
-        />
+
         <Stack.Screen
           name="Test"
           component={SendPhone}
@@ -52,21 +69,11 @@ const IndexHome = props => {
         />
 
         <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
           name="Profile"
           component={Profile}
           options={{headerShown: false}}
         />
 
-        <Stack.Screen
-          name="Room"
-          component={Chat}
-          options={{headerShown: false}}
-        />
         <Stack.Screen
           name="SettingScreen"
           component={SettingsDrawer}

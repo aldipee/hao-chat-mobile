@@ -1,36 +1,20 @@
 import React, {useState} from 'react';
-import {View, Text, ToastAndroid} from 'react-native';
+import {View} from 'react-native';
 import {Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
-import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {connect} from 'react-redux';
+import {setLogin} from '../redux/actions/AuthAction';
 
-export default function Login(props) {
+function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const onSubmit = () => {
-    auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        auth().onAuthStateChanged(userData => {
-          const id = userData._user.uid;
-          database()
-            .ref(`/UserList/${id}`)
-            .once('value')
-            .then(snapshot => {
-              props.navigation.navigate('UploadImage', snapshot.val());
-              console.log('User data: ', snapshot.val());
-            });
-        });
-      })
-      .catch(err => {
-        console.log(err.code);
-        if (err.code === 'auth/wrong-password') {
-          ToastAndroid.show('Wrong Password', ToastAndroid.SHORT);
-        }
-      });
+    props.setLogin(email, password, success => {
+      if (success) {
+      }
+    });
   };
 
   return (
@@ -45,7 +29,7 @@ export default function Login(props) {
       <View>
         <Input
           placeholder="Email"
-          leftIcon={<Icon name="md-call" size={24} color="#000" />}
+          leftIcon={<Icon name="md-person" size={24} color="#000" />}
           inputStyle={{fontSize: 15, paddingBottom: 5}}
           leftIconContainerStyle={{
             marginLeft: 10,
@@ -61,12 +45,13 @@ export default function Login(props) {
             borderColor: '#d1d1d1',
           }}
           onChangeText={text => setEmail(text)}
-          label="Phone Number"
+          label="Email"
           labelStyle={{fontSize: 13, marginBottom: 4}}
         />
         <Input
           placeholder="Password"
-          leftIcon={<Icon name="md-call" size={24} color="#000" />}
+          containerStyle={{marginTop: 18}}
+          leftIcon={<Icon name="md-lock" size={24} color="#000" />}
           inputStyle={{fontSize: 15, paddingBottom: 5}}
           leftIconContainerStyle={{
             marginLeft: 10,
@@ -82,12 +67,10 @@ export default function Login(props) {
             borderColor: '#d1d1d1',
           }}
           onChangeText={text => setPassword(text)}
-          label="Phone Number"
+          label="Password"
           labelStyle={{fontSize: 13, marginBottom: 4}}
         />
-        <TouchableOpacity onPress={() => props.navigation.navigate('Register')}>
-          <Text>Register</Text>
-        </TouchableOpacity>
+
         <View>
           <Button
             type="outline"
@@ -102,3 +85,8 @@ export default function Login(props) {
     </View>
   );
 }
+
+export default connect(
+  null,
+  {setLogin},
+)(Login);

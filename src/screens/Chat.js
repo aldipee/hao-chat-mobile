@@ -4,74 +4,22 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
-  Alert,
-  ScrollView,
   TextInput,
   FlatList,
-  Button,
 } from 'react-native';
+import database from '@react-native-firebase/database';
+import {Header, Avatar} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/AntDesign';
+import {connect} from 'react-redux';
 
-export default class Chat extends Component {
+class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [
-        {
-          id: 1,
-          date: '9:50 am',
-          type: 'in',
-          message: 'Lorem ipsum dolor sit amet',
-        },
-        {
-          id: 2,
-          date: '9:50 am',
-          type: 'out',
-          message: 'Lorem ipsum dolor sit amet',
-        },
-        {
-          id: 3,
-          date: '9:50 am',
-          type: 'in',
-          message: 'Lorem ipsum dolor sit a met',
-        },
-        {
-          id: 4,
-          date: '9:50 am',
-          type: 'in',
-          message: 'Lorem ipsum dolor sit a met',
-        },
-        {
-          id: 5,
-          date: '9:50 am',
-          type: 'out',
-          message: 'Lorem ipsum dolor sit a met',
-        },
-        {
-          id: 6,
-          date: '9:50 am',
-          type: 'out',
-          message: 'Lorem ipsum dolor sit a met',
-        },
-        {
-          id: 7,
-          date: '9:50 am',
-          type: 'in',
-          message: 'Lorem ipsum dolor sit a met',
-        },
-        {
-          id: 8,
-          date: '9:50 am',
-          type: 'in',
-          message: 'Lorem ipsum dolor sit a met',
-        },
-        {
-          id: 9,
-          date: '9:50 am',
-          type: 'in',
-          message: 'Lorem ipsum dolor sit a met',
-        },
-      ],
+      currentUser: this.props.userData.uid,
+      userSelected: this.props.route.params.data.uid,
+      message: [],
+      textMessage: '',
     };
   }
 
@@ -79,19 +27,104 @@ export default class Chat extends Component {
     return <Text style={styles.time}>{date}</Text>;
   };
 
+  componentDidMount() {
+    // Read all data from database
+    // based on currentUser and the chiled is userSelected
+    console.log(' Lett');
+    database()
+      .ref('message/')
+      .child(`/${this.state.currentUser}/`)
+      .child(`/${this.state.userSelected}/`)
+      .on('child_added', value => {
+        console.log(value, 'Hola');
+        this.setState(prevState => {
+          const data = value.val();
+          const res = [...prevState.message, value.val()];
+          const d = res.map((data, index) => {});
+          return {
+            message: [...prevState.message, value.val()],
+          };
+        });
+      });
+  }
+
+  sendMessage = async () => {
+    console.log('HHHHh');
+    if (this.state.textMessage.length > 0) {
+      try {
+        let messageId = (await database()
+          .ref(`message/`)
+          .child(`/${this.state.currentUser}/`)
+          .child(`/${this.state.userSelected}`)
+          .push()).key;
+        let updates = {};
+        let message = {
+          message: this.state.textMessage,
+          time: database.ServerValue.TIMESTAMP,
+          from: this.state.currentUser,
+        };
+        updates[
+          `message/${this.state.currentUser}/${
+            this.state.userSelected
+          }/${messageId}`
+        ] = message;
+        updates[
+          `message/${this.state.userSelected}/${
+            this.state.currentUser
+          }/${messageId}`
+        ] = message;
+        database()
+          .ref()
+          .update(updates, () => {
+            this.setState({textMessage: ''});
+          });
+      } catch (error) {
+        console.log('This error from chat', error);
+      }
+    }
+  };
+
   render() {
+    const {data} = this.props.route.params;
     return (
       <View style={styles.container}>
+        <Header
+          containerStyle={{marginTop: -30, backgroundColor: '#fff'}}
+          leftComponent={
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Icon name="arrowleft" size={20} />
+              </TouchableOpacity>
+              <Avatar
+                containerStyle={{marginLeft: 14}}
+                rounded
+                source={{
+                  uri: data.photo,
+                }}
+              />
+            </View>
+          }
+          centerComponent={{
+            text: data.name,
+            style: {color: '#000', fontWeight: 'bold', fontSize: 17},
+          }}
+          rightComponent={{icon: 'home', color: '#000'}}
+        />
         <FlatList
           style={styles.list}
-          data={this.state.data}
+          data={this.state.message}
           keyExtractor={item => {
             return item.id;
           }}
           renderItem={message => {
-            console.log(item);
             const item = message.item;
-            let inMessage = item.type === 'in';
+            let inMessage = item.from === this.state.userSelected;
+            console.log(item);
             let itemStyle = inMessage ? styles.itemIn : styles.itemOut;
             return (
               <View style={[styles.item, itemStyle]}>
@@ -108,19 +141,23 @@ export default class Chat extends Component {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.inputs}
+              value={this.state.textMessage}
               placeholder="Write a message..."
               underlineColorAndroid="transparent"
-              onChangeText={name_address => this.setState({name_address})}
+              onChangeText={text => this.setState({textMessage: text})}
             />
           </View>
 
-          <TouchableOpacity style={styles.btnSend}>
-            <Image
+          <TouchableOpacity style={styles.btnSend} onPress={this.sendMessage}>
+            <View style={styles.iconSend}>
+              <Icon name="rightsquare" size={30} />
+            </View>
+            {/* <Image
               source={{
                 uri: 'https://png.icons8.com/small/75/ffffff/filled-sent.png',
               }}
               style={styles.iconSend}
-            />
+            /> */}
           </TouchableOpacity>
         </View>
       </View>
@@ -137,18 +174,18 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
-    height: 60,
-    backgroundColor: '#eeeeee',
+    height: 70,
+    backgroundColor: '#fff',
     paddingHorizontal: 10,
     padding: 5,
   },
   btnSend: {
-    backgroundColor: '#00BFFF',
     width: 40,
     height: 40,
     borderRadius: 360,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 9,
   },
   iconSend: {
     width: 30,
@@ -157,8 +194,9 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     borderBottomColor: '#F5FCFF',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 30,
+    backgroundColor: '#eeeeee',
+    borderRadius: 10,
+    marginTop: 9,
     borderBottomWidth: 1,
     height: 40,
     flexDirection: 'row',
@@ -190,11 +228,22 @@ const styles = StyleSheet.create({
     color: '#808080',
   },
   item: {
-    marginVertical: 14,
+    marginVertical: 6,
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#eeeeee',
-    borderRadius: 300,
-    padding: 5,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    padding: 2,
   },
 });
+
+const mapStateToProps = state => {
+  return {
+    userData: state.authData.data,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null,
+)(Chat);

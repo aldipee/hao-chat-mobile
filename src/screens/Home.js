@@ -1,24 +1,40 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, FlatList} from 'react-native';
 import {ListItem, SearchBar, Header} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
+import {connect} from 'react-redux';
+import {setLogout} from '../redux/actions/AuthAction';
+import database from '@react-native-firebase/database';
 
-const data = [
-  {
-    id: 1,
-    name: 'Ronaldo',
-    phone: '+6282185142048',
-  },
-];
+function Home(props) {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default function Home(props) {
+  const onLogout = () => {
+    props.setLogout();
+    props.navigation.navigate('Home');
+  };
+  useEffect(() => {
+    database()
+      .ref('UsersList/')
+      .on('value', snapshot => {
+        const currentUser = props.user.uid;
+        const data = snapshot.val();
+        const user = Object.values(data);
+        const result = user.filter(u => u.uid !== currentUser);
+        setUsers(result);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <>
       <ScrollView>
         <Header
           leftComponent={() => (
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate('Profile')}>
               <Icon name="ios-menu" color="#000" size={30} />
             </TouchableOpacity>
           )}
@@ -27,7 +43,7 @@ export default function Home(props) {
             style: {color: '#000', fontSize: 17, fontWeight: 'bold'},
           }}
           rightComponent={
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onLogout}>
               <Icon name="ios-settings" color="#000" size={30} />
             </TouchableOpacity>
           }
@@ -63,9 +79,10 @@ export default function Home(props) {
 
           <FlatList
             keyExtractor={(item, index) => index.toString()}
-            data={[1, 2, 3, 4, 5, 6, 9, 1, 1, 1, 1, 1]}
+            data={users}
             renderItem={({item, index}) => (
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('Room', {data: item})}>
                 <ListItem
                   key={index}
                   containerStyle={{
@@ -76,8 +93,9 @@ export default function Home(props) {
                   cont
                   leftAvatar={{
                     rounded: true,
+                    source: {uri: item.photo},
                   }}
-                  title={'Aldi Pranata'}
+                  title={item.name}
                   titleStyle={{fontWeight: '700'}}
                   rightSubtitle={'09:30 PM'}
                   subtitle={'Hey, sup!'}
@@ -91,3 +109,14 @@ export default function Home(props) {
     </>
   );
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.authData.data,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {setLogout},
+)(Home);

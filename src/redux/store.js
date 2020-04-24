@@ -10,6 +10,7 @@ import rootReducer from './reducers';
 const config = {
   key: 'container',
   storage: AsyncStorage,
+  whitelist: ['authData'],
 };
 
 const persistedReducer = persistReducer(config, rootReducer);

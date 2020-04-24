@@ -16,7 +16,9 @@ class UploadImage extends Component {
       quality: 0.7,
       mediaType: 'photo',
       noData: true,
+      allowsEditing: true,
       storageOptions: {
+        waitUntilSaved: true,
         path: 'images',
         cameraRoll: true,
       },
@@ -66,7 +68,6 @@ class UploadImage extends Component {
 
   uploadPicture = async () => {
     console.log('mulai upload');
-    storage().ref('profile/maam.png');
   };
 
   render() {

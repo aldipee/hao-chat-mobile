@@ -20,7 +20,7 @@ function Register(props) {
       .then(() => {
         auth().onAuthStateChanged(userData => {
           database()
-            .ref('UserList/' + userData.uid)
+            .ref('UsersList/' + userData.uid)
             .set({
               name: fullName,
               status: 'online',
@@ -161,6 +161,14 @@ function Register(props) {
             onPress={onSubmit}
             type="outline"
             title="Register"
+            buttonStyle={{backgroundColor: '#000'}}
+            titleStyle={{fontSize: 14, color: '#fff'}}
+            containerStyle={{marginTop: 15, paddingHorizontal: 10}}
+          />
+          <Button
+            onPress={() => props.navigation.navigate('Login')}
+            type="outline"
+            title="Login"
             buttonStyle={{backgroundColor: '#000'}}
             titleStyle={{fontSize: 14, color: '#fff'}}
             containerStyle={{marginTop: 15, paddingHorizontal: 10}}
