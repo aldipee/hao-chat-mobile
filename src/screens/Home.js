@@ -4,18 +4,30 @@ import {ListItem, SearchBar, Header} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
-import {setLogout} from '../redux/actions/AuthAction';
+import {setLogout, setUserLocation} from '../redux/actions/AuthAction';
 import database from '@react-native-firebase/database';
+import Geolocation from '@react-native-community/geolocation';
+Geolocation.setRNConfiguration({skipPermissionRequests: true});
 
 function Home(props) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [location, setLocation] = useState({});
 
   const onLogout = () => {
     props.setLogout();
     props.navigation.navigate('Home');
   };
   useEffect(() => {
+    Geolocation.getCurrentPosition(
+      data => {
+        setLocation(data.coords);
+        setUserLocation(data.coords);
+      },
+      err => {
+        console.log(err);
+      },
+    );
     database()
       .ref('UsersList/')
       .on('value', snapshot => {
@@ -34,7 +46,7 @@ function Home(props) {
         <Header
           leftComponent={() => (
             <TouchableOpacity
-              onPress={() => props.navigation.navigate('Profile')}>
+              onPress={() => props.navigation.navigate('Profile', props.user)}>
               <Icon name="ios-menu" color="#000" size={30} />
             </TouchableOpacity>
           )}
@@ -118,5 +130,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  {setLogout},
+  {setLogout, setUserLocation},
 )(Home);

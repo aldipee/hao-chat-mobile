@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 
 const Style = StyleSheet.create({
   container: {
@@ -47,8 +47,27 @@ export default class MapViews extends Component {
                 longitude: this.state.longitude,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
-              }}
-            />
+              }}>
+              {/* <MapView.Marker
+                image={this.props.route.params.photo}
+                coordinate={{
+                  latitude: this.state.latitude,
+                  longitude: this.state.longitude,
+                }}
+                title={'title'}
+                description={'description'}
+              /> */}
+              <MapView.Marker
+                title={this.props.route.params.name}
+                description={`${
+                  this.props.route.params.name
+                }'s current position`}
+                coordinate={{
+                  latitude: this.state.latitude,
+                  longitude: this.state.longitude,
+                }}
+              />
+            </MapView>
           )}
         </View>
       </View>

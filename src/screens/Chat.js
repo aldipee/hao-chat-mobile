@@ -109,10 +109,14 @@ class Chat extends Component {
               />
             </View>
           }
-          centerComponent={{
-            text: data.name,
-            style: {color: '#000', fontWeight: 'bold', fontSize: 17},
-          }}
+          centerComponent={
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('MapView', data)}>
+              <Text style={{fontSize: 17, fontWeight: 'bold'}}>
+                {data.name}
+              </Text>
+            </TouchableOpacity>
+          }
           rightComponent={{icon: 'home', color: '#000'}}
         />
         <FlatList

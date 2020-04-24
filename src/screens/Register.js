@@ -4,6 +4,9 @@ import {Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import Geolocation from '@react-native-community/geolocation';
+Geolocation.setRNConfiguration({skipPermissionRequests: true});
+
 // Redux
 import {connect} from 'react-redux';
 import {insertNewUser} from '../redux/actions/AuthAction';
@@ -13,8 +16,21 @@ function Register(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [location, setLocation] = useState({});
+  useEffect(() => {
+    const user = auth().currentUser;
+    console.log('FUC', user);
+    Geolocation.getCurrentPosition(
+      data => {
+        setLocation(data.coords);
+      },
+      err => {
+        console.log(err);
+      },
+    );
+  }, []);
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const data = {fullName, email, phoneNumber, password};
     auth()
       .createUserWithEmailAndPassword(email, password)
@@ -30,6 +46,10 @@ function Register(props) {
                 'https://cdn2.iconfinder.com/data/icons/men-women-from-all-over-the-world-1/93/man-woman-people-person-avatar-face-user_49-512.png',
               uid: userData.uid,
               phoneNumber,
+              location,
+            })
+            .then(() => {
+              auth().signOut();
             })
             .catch(error => console.log(error.message));
         });

@@ -2,22 +2,28 @@ import React, {Component} from 'react';
 import {Text, View, ScrollView, StyleSheet, Platform} from 'react-native';
 import {Card, Avatar, Button} from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
-// import storage from '@react-native-firebase/storage';
+import storage from '@react-native-firebase/storage';
+import database from '@react-native-firebase/database';
+import {connect} from 'react-redux';
+import {setNewPicutre} from '../redux/actions/AuthAction';
 
 class UploadImage extends Component {
   state = {
     uri: '',
     upload: true,
-    image: '',
+    image: {
+      uri: this.props.route.params.photo,
+    },
   };
   //Handle Choose Picture
   choosePicture = () => {
     var options = {
       quality: 0.7,
+      allowsEditing: true,
       mediaType: 'photo',
       noData: true,
-      allowsEditing: true,
       storageOptions: {
+        skipBackup: true,
         waitUntilSaved: true,
         path: 'images',
         cameraRoll: true,
@@ -50,6 +56,7 @@ class UploadImage extends Component {
   };
 
   uriToBlob = uri => {
+    console.log('URI', uri);
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function() {
@@ -67,7 +74,40 @@ class UploadImage extends Component {
   };
 
   uploadPicture = async () => {
-    console.log('mulai upload');
+    try {
+      const file = await this.uriToBlob(this.state.image.uri);
+      console.log('mulai upload', file);
+      storage()
+        .ref(`profile/${this.props.route.params.uid}.png`)
+        .put(file)
+        .then(async () => {
+          const url = await storage()
+            .ref(`profile/${this.props.route.params.uid}.png`)
+            .getDownloadURL();
+          this.updateUserImage(url);
+        })
+        .catch(err => {
+          console.log({err}, 'ERROR IN UPLOAD IMAGEPICKER');
+        });
+    } catch (error) {
+      console.log({error});
+    }
+  };
+
+  updateUserImage = async imageUrl => {
+    const id = this.props.route.params.uid;
+
+    database()
+      .ref(`UsersList/${id}`)
+      .child('photo')
+      .set(imageUrl)
+      .then(() => {
+        this.props.setNewPicutre(imageUrl);
+        this.props.navigation.goBack();
+      })
+      .catch(err => {
+        console.log({err}, 'ERROR PAS');
+      });
   };
 
   render() {
@@ -79,6 +119,8 @@ class UploadImage extends Component {
             borderBottomLeftRadius: 15,
             borderBottomRightRadius: 15,
             height: 190,
+            flex: 1,
+            flexDirection: 'column',
             paddingHorizontal: 20,
             justifyContent: 'center',
             alignItems: 'center',
@@ -104,11 +146,21 @@ class UploadImage extends Component {
             Abi Daniela
           </Text>
         </View>
-        <View style={{paddingHorizontal: 10, backgroundColor: '#fff'}}>
+        <View style={{paddingHorizontal: 10}}>
           {/* Balance Info */}
 
-          <View style={{marginBottom: 20}}>
-            <Button onPress={this.uploadPicture} title="Upload" />
+          <View
+            style={{
+              marginBottom: 20,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Button buttonStyle={{paddingHorizontal: 20}} title="Skip" />
+            <Button
+              buttonStyle={{paddingHorizontal: 20}}
+              onPress={this.uploadPicture}
+              title="Upload"
+            />
           </View>
         </View>
       </ScrollView>
@@ -125,4 +177,7 @@ const localStyle = StyleSheet.create({
   iconDesc: {fontSize: 11, alignItems: 'center'},
 });
 
-export default UploadImage;
+export default connect(
+  null,
+  {setNewPicutre},
+)(UploadImage);

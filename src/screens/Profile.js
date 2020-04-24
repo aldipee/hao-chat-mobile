@@ -20,7 +20,10 @@ function ProfileScreen(props) {
           rounded
           size="large"
           title={'AP'}
-          onPress={() => console.log('aaa')}
+          source={{uri: props.route.params.photo}}
+          onPress={() =>
+            props.navigation.navigate('UploadImage', props.route.params)
+          }
           activeOpacity={0.7}
         />
         <Text
@@ -30,7 +33,7 @@ function ProfileScreen(props) {
             color: '#000',
             marginTop: 10,
           }}>
-          Aldi Pranata
+          {props.route.params.name}
         </Text>
       </View>
       <View style={{paddingHorizontal: 20, backgroundColor: '#fff'}}>
@@ -40,21 +43,13 @@ function ProfileScreen(props) {
             <ListItem
               containerStyle={{paddingLeft: 1}}
               title={'Email'}
-              subtitle={'aldipeee@gmail.com'}
+              subtitle={props.route.params.email}
               rightTitle={'Verified'}
               rightTitleStyle={{fontSize: 11}}
               titleStyle={{fontSize: 12, color: '#000'}}
               bottomDivider
             />
-            <ListItem
-              containerStyle={{paddingLeft: 1}}
-              title={'Nomor Handphone'}
-              subtitle={'0822211111'}
-              rightTitle={'Verified'}
-              rightTitleStyle={{fontSize: 11}}
-              titleStyle={{fontSize: 12, color: '#000'}}
-              bottomDivider
-            />
+
             <ListItem
               containerStyle={{paddingLeft: 1}}
               title={'Alamat'}
