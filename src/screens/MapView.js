@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import {getSingleData} from '../redux/actions/AuthAction';
+import {connect} from 'react-redux';
 
 const Style = StyleSheet.create({
   container: {
@@ -14,7 +16,7 @@ const Style = StyleSheet.create({
 import Geolocation from '@react-native-community/geolocation';
 Geolocation.setRNConfiguration({skipPermissionRequests: true});
 
-export default class MapViews extends Component {
+class MapViews extends Component {
   state = {
     coords: {},
   };
@@ -51,8 +53,8 @@ export default class MapViews extends Component {
               {/* <MapView.Marker
                 image={this.props.route.params.photo}
                 coordinate={{
-                  latitude: this.state.latitude,
-                  longitude: this.state.longitude,
+                  latitude: this.props.route.params.location.latitude,
+                  longitude: this.props.route.params.location.longitude,
                 }}
                 title={'title'}
                 description={'description'}
@@ -63,8 +65,8 @@ export default class MapViews extends Component {
                   this.props.route.params.name
                 }'s current position`}
                 coordinate={{
-                  latitude: this.state.latitude,
-                  longitude: this.state.longitude,
+                  latitude: this.props.route.params.location.latitude,
+                  longitude: this.props.route.params.location.longitude,
                 }}
               />
             </MapView>
@@ -74,3 +76,14 @@ export default class MapViews extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    currentUser: state.authData,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {getSingleData},
+)(MapViews);
