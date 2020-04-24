@@ -15,6 +15,7 @@ function Register(props) {
   const [phoneNumber, setPhoneNumber] = useState('');
 
   const onSubmit = () => {
+    const data = {fullName, email, phoneNumber, password};
     auth()
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
@@ -28,6 +29,7 @@ function Register(props) {
               photo:
                 'https://cdn2.iconfinder.com/data/icons/men-women-from-all-over-the-world-1/93/man-woman-people-person-avatar-face-user_49-512.png',
               uid: userData.uid,
+              phoneNumber,
             })
             .catch(error => console.log(error.message));
         });
@@ -135,7 +137,7 @@ function Register(props) {
         />
         <Input
           placeholder="Your Passwrod"
-          leftIcon={<Icon name="md-call" size={24} color="#000" />}
+          leftIcon={<Icon name="md-lock" size={24} color="#000" />}
           inputStyle={{fontSize: 15, paddingBottom: 5}}
           containerStyle={{marginVertical: 10}}
           leftIconContainerStyle={{
@@ -151,7 +153,7 @@ function Register(props) {
             borderRadius: 3,
             borderColor: '#d1d1d1',
           }}
-          label="Phone Number"
+          label="Password"
           onChangeText={text => setPassword(text)}
           labelStyle={{fontSize: 13, marginBottom: 4}}
         />
