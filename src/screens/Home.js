@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, FlatList} from 'react-native';
+import {AppState, View, FlatList} from 'react-native';
 import {ListItem, SearchBar, Header} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
@@ -15,6 +15,7 @@ function Home(props) {
   const [location, setLocation] = useState({});
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
+  const [appState, setAppState] = useState(AppState.currentState);
 
   const onLogout = () => {
     props.setLogout();
@@ -27,6 +28,24 @@ function Home(props) {
     } else {
       const data = users.filter((data, index) => data.name.includes(keyword));
       setUsers(data);
+    }
+  };
+
+  const _handleAppStateChange = nextAppState => {
+    if (nextAppState === 'background') {
+      database()
+        .ref(`UsersList/${props.user.uid}`)
+        .update({
+          status: 'Offline',
+        })
+        .then(() => console.log('Data updated.'));
+    } else if (nextAppState === 'active') {
+      database()
+        .ref(`UsersList/${props.user.uid}`)
+        .update({
+          status: 'Online',
+        })
+        .then(() => console.log('Data updated.'));
     }
   };
 
@@ -51,6 +70,11 @@ function Home(props) {
         setUsers(result);
         setLoading(false);
       });
+    AppState.addEventListener('change', _handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener('change', _handleAppStateChange);
+    };
   }, []);
 
   return (
@@ -127,8 +151,8 @@ function Home(props) {
                   }}
                   title={item.name}
                   titleStyle={{fontWeight: '700'}}
-                  rightSubtitle={'09:30 PM'}
-                  subtitle={'Hey, sup!'}
+                  rightSubtitle={''}
+                  subtitle={item.status}
                   bottomDivider
                 />
               </TouchableOpacity>

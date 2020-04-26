@@ -292,6 +292,7 @@ class Rooms extends Component {
           }
         />
         <GiftedChat
+          isTyping={true}
           showUserAvatar={false}
           showAvatarForEveryMessage={false}
           renderAvatar={false}

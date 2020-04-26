@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import {Card, Button} from 'react-native-elements';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {getSingleData} from '../redux/actions/AuthAction';
 import {connect} from 'react-redux';
 
 const Style = StyleSheet.create({
   container: {
-    height: 400,
+    height: 200,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -42,7 +43,6 @@ class MapViews extends Component {
               provider={PROVIDER_GOOGLE}
               followsUserLocation={true}
               showsMyLocationButton={true}
-              minZoomLevel={16}
               loadingEnabled={true}
               showsUserLocation
               style={Style.map}
@@ -73,6 +73,19 @@ class MapViews extends Component {
               />
             </MapView>
           )}
+        </View>
+        <View>
+          <Card
+            image={{uri: this.props.route.params.photo}}
+            imageStyle={{height: 240}}>
+            <View style={{marginBottom: 10}}>
+              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                {this.props.route.params.name}
+              </Text>
+              <Text>{this.props.route.params.email}</Text>
+              <Text>{this.props.route.params.phoneNumber}</Text>
+            </View>
+          </Card>
         </View>
       </View>
     );

@@ -11,11 +11,22 @@ import {setLogin} from '../redux/actions/AuthAction';
 function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const user = auth().currentUser;
     console.log(user);
   });
+
+  const checkemail = () => {
+    let req = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    console.log(req.test(email));
+    if (!req.test(email)) {
+      setErrorMessage('Email is invalid!');
+    } else {
+      setErrorMessage(null);
+    }
+  };
 
   const onSubmit = () => {
     props.setLogin(email, password, success => {
@@ -63,7 +74,9 @@ function Login(props) {
             borderRadius: 3,
             borderColor: '#d1d1d1',
           }}
+          onBlur={() => checkemail()}
           onChangeText={text => setEmail(text)}
+          errorMessage={errorMessage ? errorMessage : null}
           label="Email"
           labelStyle={{fontSize: 13, marginBottom: 4}}
         />
@@ -99,6 +112,20 @@ function Login(props) {
             titleStyle={{fontSize: 14, color: '#fff'}}
             containerStyle={{marginTop: 15, paddingHorizontal: 10}}
           />
+          <View
+            style={{
+              marginTop: 10,
+              paddingHorizontal: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate('Register')}>
+              <Text style={{color: '#d1d1d1'}}>
+                Dont have an account? Sign Up here
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>

@@ -17,6 +17,29 @@ function Register(props) {
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [location, setLocation] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [phoneNumberError, setPhoneNumberError] = useState(null);
+
+  const checkemail = () => {
+    let req = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    console.log(req.test(email));
+    if (!req.test(email)) {
+      setErrorMessage('Email is invalid!');
+    } else {
+      setErrorMessage(null);
+    }
+  };
+
+  const checkPhone = () => {
+    let req = /^(^\+62\s?|^0)(\d{3,4}?){2}\d{3,4}$/;
+    console.log(req.test(phoneNumber));
+    if (!req.test(phoneNumber)) {
+      setPhoneNumberError('Phone number is invalid');
+    } else {
+      setPhoneNumberError(null);
+    }
+  };
+
   useEffect(() => {
     const user = auth().currentUser;
     console.log('FUC', user);
@@ -121,6 +144,7 @@ function Register(props) {
             marginRight: 10,
             paddingBottom: 0,
           }}
+          onBlur={() => checkemail()}
           onChangeText={text => setEmail(text)}
           inputContainerStyle={{
             borderBottomWidth: 1,
@@ -130,6 +154,7 @@ function Register(props) {
             borderRadius: 3,
             borderColor: '#d1d1d1',
           }}
+          errorMessage={errorMessage ? errorMessage : null}
           label="Email"
           labelStyle={{fontSize: 13, marginBottom: 4}}
         />
@@ -143,6 +168,7 @@ function Register(props) {
             marginRight: 10,
             paddingBottom: 0,
           }}
+          onBlur={() => checkPhone()}
           onChangeText={text => setPhoneNumber(text)}
           inputContainerStyle={{
             borderBottomWidth: 1,
@@ -153,6 +179,7 @@ function Register(props) {
             borderColor: '#d1d1d1',
           }}
           label="Phone Number"
+          errorMessage={phoneNumberError ? phoneNumberError : null}
           labelStyle={{fontSize: 13, marginBottom: 4}}
         />
         <Input

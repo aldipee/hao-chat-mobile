@@ -104,7 +104,7 @@ class UploadImage extends Component {
         .set(imageUrl)
         .then(() => {
           this.props.setNewPicutre(imageUrl);
-          this.props.navigation.goBack();
+          this.props.navigation.navigate('Profile', {uri: imageUrl});
         })
         .catch(err => {
           console.log({err}, 'ERROR PAS');

@@ -1,8 +1,23 @@
-import React from 'react';
-import {Text, View, ScrollView, StyleSheet} from 'react-native';
+import React, {useEffect, useCallback} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import {Text, View, ScrollView, StyleSheet, ToastAndroid} from 'react-native';
 import {Avatar, Button, ListItem} from 'react-native-elements';
+import {connect} from 'react-redux';
+import {setLogout} from '../redux/actions/AuthAction';
 
 function ProfileScreen(props) {
+  useFocusEffect(
+    useCallback(() => {
+      if (props.route.params.uri) {
+        ToastAndroid.show('Profile Picture update!', ToastAndroid.SHORT);
+      }
+    }, []),
+  );
+  const onLogout = () => {
+    props.setLogout();
+    props.navigation.navigate('Home');
+  };
+  useEffect(() => {}, []);
   return (
     <ScrollView>
       <View
@@ -19,7 +34,11 @@ function ProfileScreen(props) {
           rounded
           size="large"
           title={'AP'}
-          source={{uri: props.route.params.photo}}
+          source={{
+            uri: props.route.params.uri
+              ? props.route.params.uri
+              : props.route.params.photo,
+          }}
           onPress={() =>
             props.navigation.navigate('UploadImage', props.route.params)
           }
@@ -60,7 +79,7 @@ function ProfileScreen(props) {
         </View>
 
         <View style={{marginBottom: 20}}>
-          <Button title="Logout" />
+          <Button title="Logout" onPress={onLogout} />
         </View>
       </View>
 
@@ -73,4 +92,7 @@ function ProfileScreen(props) {
   );
 }
 
-export default ProfileScreen;
+export default connect(
+  null,
+  {setLogout},
+)(ProfileScreen);
