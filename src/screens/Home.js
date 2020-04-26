@@ -13,11 +13,23 @@ function Home(props) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState({});
+  const [search, setSearch] = useState('');
+  const [data, setData] = useState([]);
 
   const onLogout = () => {
     props.setLogout();
     props.navigation.navigate('Home');
   };
+
+  const onSearch = keyword => {
+    if (keyword === '') {
+      setUsers(data);
+    } else {
+      const data = users.filter((data, index) => data.name.includes(keyword));
+      setUsers(data);
+    }
+  };
+
   useEffect(() => {
     Geolocation.getCurrentPosition(
       data => {
@@ -35,6 +47,7 @@ function Home(props) {
         const data = snapshot.val();
         const user = Object.values(data);
         const result = user.filter(u => u.uid !== currentUser);
+        setData(result);
         setUsers(result);
         setLoading(false);
       });
@@ -67,6 +80,11 @@ function Home(props) {
         />
         <View style={{paddingHorizontal: 0, backgroundColor: '#fefefe'}}>
           <SearchBar
+            value={search}
+            onChangeText={text => {
+              setSearch(text);
+              onSearch(text);
+            }}
             placeholder="Search your friends ..."
             lightTheme={true}
             inputContainerStyle={{
