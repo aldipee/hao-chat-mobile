@@ -6,6 +6,8 @@ import database from '@react-native-firebase/database';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Modal from 'react-native-modal';
 import SortData from 'sort-objects-array';
+import ImagePicker from 'react-native-image-picker';
+import storage from '@react-native-firebase/storage';
 import {connect} from 'react-redux';
 
 class Rooms extends Component {
@@ -93,6 +95,98 @@ class Rooms extends Component {
     // });
   }
 
+  uriToBlob = uri => {
+    console.log('URI', uri);
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function() {
+        resolve(xhr.response);
+      };
+
+      xhr.onerror = function() {
+        reject(new Error('Error on upload image'));
+      };
+
+      xhr.responseType = 'blob';
+      xhr.open('GET', uri, true);
+      xhr.send(null);
+    });
+  };
+
+  handleAddPicture = () => {
+    const options = {
+      title: 'Select Profile Pic',
+      mediaType: 'photo',
+      takePhotoButtonTitle: 'Take a Photo',
+
+      allowsEditing: true,
+      noData: true,
+    };
+    ImagePicker.showImagePicker(options, async response => {
+      console.log('Response = ', response);
+      if (response.didCancel) {
+        // do nothing
+      } else if (response.error) {
+        // alert error
+      } else {
+        const {uri} = response;
+        const extensionIndex = uri.lastIndexOf('.');
+        const extension = uri.slice(extensionIndex + 1);
+        const allowedExtensions = ['jpg', 'jpeg', 'png'];
+        const correspondingMime = ['image/jpeg', 'image/jpeg', 'image/png'];
+
+        const blobImage = await this.uriToBlob(uri);
+        storage()
+          .ref(`profile/${this.props.route.params.uid}.png`)
+          .put(blobImage)
+          .then(async () => {
+            const url = await storage()
+              .ref(`profile/${this.props.route.params.uid}.png`)
+              .getDownloadURL();
+            const dataMessage = {
+              text: '',
+              createdAt: database.ServerValue.TIMESTAMP,
+              from: this.state.currentUser,
+              image: url,
+            };
+            try {
+              let messageId = (await database()
+                .ref(`message/`)
+                .child(`/${this.state.currentUser}/`)
+                .child(`/${this.state.userSelected}`)
+                .push()).key;
+              let updates = {};
+
+              updates[
+                `message/${this.state.currentUser}/${
+                  this.state.userSelected
+                }/${messageId}`
+              ] = dataMessage;
+              updates[
+                `message/${this.state.userSelected}/${
+                  this.state.currentUser
+                }/${messageId}`
+              ] = dataMessage;
+              database()
+                .ref()
+                .update(updates, () => {
+                  this.setState({textMessage: ''});
+                });
+            } catch (error) {
+              console.log('This error from chat', error);
+            }
+          })
+          .catch(err => {
+            console.log({err}, 'ERROR IN UPLOAD IMAGEPICKER');
+          });
+
+        if (!allowedExtensions.includes(extension)) {
+          return alert('That file type is not allowed.');
+        }
+      }
+    });
+  };
+
   showProfile = () => {};
   onSend(messages = []) {
     this.setState(
@@ -171,7 +265,11 @@ class Rooms extends Component {
               </Text>
             </TouchableOpacity>
           }
-          rightComponent={{icon: 'home', color: '#000'}}
+          rightComponent={
+            <TouchableOpacity onPress={() => this.handleAddPicture()}>
+              <Icon name="camera" size={20} />
+            </TouchableOpacity>
+          }
           leftComponent={
             <View
               style={{
