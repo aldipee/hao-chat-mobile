@@ -20,10 +20,12 @@ class MapViews extends Component {
   state = {
     coords: {},
   };
-  componentDidMount() {
+  componentWillMount() {
     Geolocation.getCurrentPosition(
       data => {
-        this.setState(data.coords);
+        this.setState({
+          coords: data.coords,
+        });
       },
       err => {
         console.log(err);
@@ -45,8 +47,8 @@ class MapViews extends Component {
               showsUserLocation
               style={Style.map}
               initialRegion={{
-                latitude: this.state.latitude,
-                longitude: this.state.longitude,
+                latitude: this.props.currentUser.data.location.latitude,
+                longitude: this.props.currentUser.data.location.longitude,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
               }}>

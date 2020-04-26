@@ -63,7 +63,7 @@ const IndexHome = props => {
         <Stack.Screen
           name="UploadImage"
           component={UploadImageRegister}
-          options={{headerShown: false}}
+          options={{headerShown: true, title: 'Update Profile Picture'}}
         />
 
         <Stack.Screen

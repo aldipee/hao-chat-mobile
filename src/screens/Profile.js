@@ -1,7 +1,6 @@
 import React from 'react';
 import {Text, View, ScrollView, StyleSheet} from 'react-native';
 import {Avatar, Button, ListItem} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/AntDesign';
 
 function ProfileScreen(props) {
   return (
@@ -44,7 +43,6 @@ function ProfileScreen(props) {
               containerStyle={{paddingLeft: 1}}
               title={'Email'}
               subtitle={props.route.params.email}
-              rightTitle={'Verified'}
               rightTitleStyle={{fontSize: 11}}
               titleStyle={{fontSize: 12, color: '#000'}}
               bottomDivider
@@ -52,8 +50,8 @@ function ProfileScreen(props) {
 
             <ListItem
               containerStyle={{paddingLeft: 1}}
-              title={'Alamat'}
-              subtitle={'Jl Suka Suka'}
+              title={'Phone Number'}
+              subtitle={props.route.params.phoneNumber}
               rightTitleStyle={{fontSize: 11}}
               titleStyle={{fontSize: 12, color: '#000'}}
               bottomDivider
@@ -68,8 +66,8 @@ function ProfileScreen(props) {
 
       <View
         style={{justifyContent: 'center', alignItems: 'center', padding: 10}}>
-        <Text style={{color: '#000'}}>App Version</Text>
-        <Text style={{color: '#000'}}>Beta 0.0.1</Text>
+        <Text style={{color: '#a8a8a8'}}>App Version</Text>
+        <Text style={{color: '#a8a8a8'}}>Beta 0.0.1</Text>
       </View>
     </ScrollView>
   );

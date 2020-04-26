@@ -120,6 +120,7 @@ class UploadImage extends Component {
         {/* Avatar and Picture */}
         <View
           style={{
+            marginTop: 30,
             borderBottomLeftRadius: 15,
             borderBottomRightRadius: 15,
             height: 190,
@@ -132,7 +133,6 @@ class UploadImage extends Component {
           <Avatar
             rounded
             size="xlarge"
-            title="AP"
             onPress={this.choosePicture}
             activeOpacity={0.7}
             source={{
@@ -142,12 +142,14 @@ class UploadImage extends Component {
 
           <Text
             style={{
-              fontSize: 17,
-              fontWeight: 'bold',
-
-              marginTop: 10,
+              backgroundColor: '#cfcfcf',
+              color: '#fff',
+              padding: 10,
+              marginTop: 20,
+              borderRadius: 5,
             }}>
-            Abi Daniela
+            Upload your picture with .jpg/.png/.jpeg extension. Max file size
+            2Mb
           </Text>
         </View>
         <View style={{paddingHorizontal: 10}}>
@@ -155,11 +157,10 @@ class UploadImage extends Component {
 
           <View
             style={{
-              marginBottom: 20,
+              marginTop: 40,
               flexDirection: 'row',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
             }}>
-            <Button buttonStyle={{paddingHorizontal: 20}} title="Skip" />
             <Button
               buttonStyle={{paddingHorizontal: 20}}
               onPress={this.uploadPicture}
