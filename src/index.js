@@ -8,6 +8,7 @@ import {getSingleData} from '../src/redux/actions/AuthAction';
 import Home from '../src/screens/Home';
 import SettingsDrawer from '../src/screens/Drawwer';
 import Chat from '../src/screens/Chat';
+import Rooms from '../src/screens/Rooms';
 import Login from '../src/screens/Login';
 import Profile from '../src/screens/Profile';
 import Register from '../src/screens/Register';
@@ -49,7 +50,7 @@ const IndexHome = props => {
 
         <Stack.Screen
           name="Room"
-          component={Chat}
+          component={Rooms}
           options={{headerShown: false}}
         />
         <Stack.Screen name="MapView" component={MapView} />

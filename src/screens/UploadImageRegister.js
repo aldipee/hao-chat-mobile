@@ -95,19 +95,23 @@ class UploadImage extends Component {
   };
 
   updateUserImage = async imageUrl => {
-    const id = this.props.route.params.uid;
+    try {
+      const id = this.props.route.params.uid;
 
-    database()
-      .ref(`UsersList/${id}`)
-      .child('photo')
-      .set(imageUrl)
-      .then(() => {
-        this.props.setNewPicutre(imageUrl);
-        this.props.navigation.goBack();
-      })
-      .catch(err => {
-        console.log({err}, 'ERROR PAS');
-      });
+      database()
+        .ref(`UsersList/${id}`)
+        .child('photo')
+        .set(imageUrl)
+        .then(() => {
+          this.props.setNewPicutre(imageUrl);
+          this.props.navigation.goBack();
+        })
+        .catch(err => {
+          console.log({err}, 'ERROR PAS');
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   render() {
