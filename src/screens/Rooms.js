@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {Header, Avatar} from 'react-native-elements';
+import {Header, Avatar, Image} from 'react-native-elements';
 import database from '@react-native-firebase/database';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Modal from 'react-native-modal';
 import {connect} from 'react-redux';
 
 class Rooms extends Component {
@@ -12,6 +13,11 @@ class Rooms extends Component {
     userSelected: this.props.route.params.data.uid,
     messages: [],
     messageList: [],
+    showModal: false,
+  };
+
+  toggleModal = () => {
+    this.setState({showModal: !this.state.showModal});
   };
 
   componentDidMount() {
@@ -30,18 +36,47 @@ class Rooms extends Component {
             data.user = {
               _id: data.from === this.state.currentUser ? 1 : 2,
               avatar:
-                data.from === this.state.currentUser
-                  ? null
-                  : this.props.route.params.data.photo,
+                data.from !== this.state.currentUser
+                  ? this.props.route.params.data.photo
+                  : null,
             };
             return data;
           });
           console.log(d, 'CEEr');
           return {
-            messages: d,
+            messages: d.reverse(),
           };
         });
       });
+
+    // database()
+    //   .ref(`message/${this.state.currentUser}/${this.state.userSelected}/`).on('value').then((value) =>{
+
+    //   })
+    //   .on('child_added', value => {
+    //     this.setState(prevState => {
+    //       const data = value.val();
+    //       const res = [...prevState.messages, value.val()];
+    //       const d = res.map((data, index) => {
+    //         data.text = data.message;
+    //         data._id = index;
+    //         data.createdAt = data.time;
+    //         data.user = {
+    //           _id: data.from === this.state.currentUser ? 1 : 2,
+    //           avatar:
+    //             data.from !== this.state.currentUser
+    //               ? this.props.route.params.data.photo
+    //               : null,
+    //         };
+    //         return data;
+    //       });
+    //       console.log(d, 'CEEr');
+    //       return {
+    //         messages: d.reverse(),
+    //       };
+    //     });
+    //   });
+
     // this.setState({
     //   messages: [
     //     {
@@ -57,11 +92,11 @@ class Rooms extends Component {
     //   ],
     // });
   }
+
+  showProfile = () => {};
   onSend(messages = []) {
     this.setState(
-      previousState => ({
-        messages: GiftedChat.append(previousState.messages, messages),
-      }),
+      previousState => ({}),
       async () => {
         if (messages) {
           try {
@@ -102,6 +137,25 @@ class Rooms extends Component {
   render() {
     return (
       <>
+        <Modal
+          isVisible={this.state.showModal}
+          onBackdropPress={this.toggleModal}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: '#fff',
+              position: 'absolute',
+              bottom: '30%',
+              left: 10,
+              width: 300,
+              height: 300,
+            }}>
+            <Image
+              source={{uri: this.props.route.params.data.photo}}
+              style={{width: 300, height: 300}}
+            />
+          </View>
+        </Modal>
         <Header
           containerStyle={{marginTop: -30, backgroundColor: '#fff'}}
           centerComponent={
@@ -130,6 +184,7 @@ class Rooms extends Component {
               </TouchableOpacity>
               <Avatar
                 containerStyle={{marginLeft: 14}}
+                onPress={() => this.toggleModal()}
                 rounded
                 source={{
                   uri: this.props.route.params.data.photo,
@@ -139,9 +194,10 @@ class Rooms extends Component {
           }
         />
         <GiftedChat
+          showUserAvatar={false}
           showAvatarForEveryMessage={false}
           renderAvatar={false}
-          messages={this.state.messages.reverse()}
+          messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
           user={{
             _id: 1,

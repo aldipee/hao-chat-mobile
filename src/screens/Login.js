@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import {Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
@@ -33,6 +33,18 @@ function Login(props) {
         paddingHorizontal: 20,
         backgroundColor: '#fff',
       }}>
+      <Text style={{fontSize: 26, paddingHorizontal: 10, fontWeight: 'bold'}}>
+        Welcome Back!
+      </Text>
+      <Text
+        style={{
+          fontSize: 19,
+          paddingHorizontal: 10,
+          marginBottom: 40,
+          color: '#d1d1d1',
+        }}>
+        Ready to talk?
+      </Text>
       <View>
         <Input
           placeholder="Email"
