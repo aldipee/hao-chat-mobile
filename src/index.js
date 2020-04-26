@@ -37,13 +37,13 @@ const IndexHome = props => {
         ) : (
           <>
             <Stack.Screen
-              name="GettingStart"
-              component={GettingStart}
+              name="Login"
+              component={Login}
               options={{headerShown: false}}
             />
             <Stack.Screen
-              name="Login"
-              component={Login}
+              name="GettingStart"
+              component={GettingStart}
               options={{headerShown: false}}
             />
             <Stack.Screen

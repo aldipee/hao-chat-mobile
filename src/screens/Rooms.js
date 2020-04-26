@@ -5,6 +5,7 @@ import {Header, Avatar, Image} from 'react-native-elements';
 import database from '@react-native-firebase/database';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Modal from 'react-native-modal';
+import SortData from 'sort-objects-array';
 import {connect} from 'react-redux';
 
 class Rooms extends Component {
@@ -25,14 +26,13 @@ class Rooms extends Component {
       .ref('message/')
       .child(`/${this.state.currentUser}/`)
       .child(`/${this.state.userSelected}/`)
+
       .on('child_added', value => {
         this.setState(prevState => {
           const data = value.val();
           const res = [...prevState.messages, value.val()];
           const d = res.map((data, index) => {
-            data.text = data.message;
-            data._id = index;
-            data.createdAt = data.time;
+            data._id = 1 + index;
             data.user = {
               _id: data.from === this.state.currentUser ? 1 : 2,
               avatar:
@@ -42,9 +42,9 @@ class Rooms extends Component {
             };
             return data;
           });
-          console.log(d, 'CEEr');
+
           return {
-            messages: d.reverse(),
+            messages: SortData(d, 'createdAt', 'desc'),
           };
         });
       });
@@ -107,8 +107,8 @@ class Rooms extends Component {
               .push()).key;
             let updates = {};
             let message = {
-              message: messages[0].text,
-              time: database.ServerValue.TIMESTAMP,
+              text: messages[0].text,
+              createdAt: database.ServerValue.TIMESTAMP,
               from: this.state.currentUser,
             };
             updates[
