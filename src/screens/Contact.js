@@ -17,8 +17,9 @@ function Home(props) {
   const [data, setData] = useState([]);
   const [appState, setAppState] = useState(AppState.currentState);
 
-  const onContact = () => {
-    props.navigation.navigate('Contact');
+  const onLogout = () => {
+    props.setLogout();
+    props.navigation.navigate('Home');
   };
 
   const onSearch = keyword => {
@@ -50,9 +51,9 @@ function Home(props) {
 
   useEffect(() => {
     Geolocation.getCurrentPosition(
-      g => {
-        setLocation(g.coords);
-        setUserLocation(g.coords);
+      data => {
+        setLocation(data.coords);
+        setUserLocation(data.coords);
       },
       err => {
         console.log(err);
@@ -65,20 +66,9 @@ function Home(props) {
         const data = snapshot.val();
         const user = Object.values(data);
         const result = user.filter(u => u.uid !== currentUser);
-        database()
-          .ref('message/')
-          .on('value', s => {
-            const newData = s.val();
-            const userWMessage = Object.keys(newData);
-            console.log(userWMessage);
-            const filter = result.filter(res =>
-              userWMessage.some(uid => res.uid === uid),
-            );
-            console.log(filter);
-            setData(filter);
-            setUsers(filter);
-            setLoading(false);
-          });
+        setData(result);
+        setUsers(result);
+        setLoading(false);
       });
     AppState.addEventListener('change', _handleAppStateChange);
 
@@ -90,30 +80,6 @@ function Home(props) {
   return (
     <>
       <ScrollView>
-        <Header
-          leftComponent={() => (
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate('Profile', props.user)}>
-              <Icon name="ios-menu" color="#000" size={30} />
-            </TouchableOpacity>
-          )}
-          centerComponent={{
-            text: 'Home',
-            style: {color: '#000', fontSize: 17, fontWeight: 'bold'},
-          }}
-          rightComponent={
-            <View style={{flexDirection: 'row', marginHorizontal: 10}}>
-              <TouchableOpacity onPress={onContact} style={{marginRight: 10}}>
-                <Icon name="ios-contacts" color="#000" size={30} />
-              </TouchableOpacity>
-            </View>
-          }
-          containerStyle={{
-            height: 50,
-            paddingBottom: 20,
-            backgroundColor: '#fff',
-          }}
-        />
         <View style={{paddingHorizontal: 0, backgroundColor: '#fefefe'}}>
           <SearchBar
             value={search}
@@ -121,7 +87,7 @@ function Home(props) {
               setSearch(text);
               onSearch(text);
             }}
-            placeholder="Search your friends ..."
+            placeholder={`Search your friends, ${data.length} users found...`}
             lightTheme={true}
             inputContainerStyle={{
               backgroundColor: '#eee',
@@ -164,7 +130,7 @@ function Home(props) {
                   title={item.name}
                   titleStyle={{fontWeight: '700'}}
                   rightSubtitle={''}
-                  subtitle={item.status}
+                  subtitle={`${item.email} | ${item.phoneNumber}`}
                   bottomDivider
                 />
               </TouchableOpacity>

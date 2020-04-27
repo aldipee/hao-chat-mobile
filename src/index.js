@@ -14,6 +14,7 @@ import Profile from '../src/screens/Profile';
 import Register from '../src/screens/Register';
 import SendPhone from '../src/screens/SendPhone';
 import UploadImage from '../src/screens/UploadImage';
+import Contact from '../src/screens/Contact';
 import GettingStart from '../src/screens/GettingStart';
 import UploadImageRegister from '../src/screens/UploadImageRegister';
 import MapView from './screens/MapView';
@@ -29,11 +30,13 @@ const IndexHome = props => {
     <NavigationContainer>
       <Stack.Navigator>
         {props.authData.isLogin ? (
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{headerShown: false}}
-          />
+          <>
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{headerShown: false}}
+            />
+          </>
         ) : (
           <>
             <Stack.Screen
@@ -53,6 +56,11 @@ const IndexHome = props => {
             />
           </>
         )}
+        <Stack.Screen
+          name="Contact"
+          component={Contact}
+          options={{headerShown: true}}
+        />
 
         <Stack.Screen
           name="Room"
