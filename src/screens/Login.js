@@ -113,6 +113,7 @@ function Login(props) {
             type="outline"
             onPress={onSubmit}
             loading={loading}
+            disabled={password === '' ? true : null}
             title="Login"
             buttonStyle={{backgroundColor: '#000'}}
             titleStyle={{fontSize: 14, color: '#fff'}}

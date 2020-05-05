@@ -38,11 +38,12 @@ class UploadImage extends Component {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
-      } else if (response.fileSize > 2) {
+      } else if (response.fileSize > 2048576) {
         console.log('FILE KEBESARAN');
+        this.setState({upload: false});
         ToastAndroid.show('Your file size is too big', ToastAndroid.SHORT);
       } else {
-        console.log(response.fileSize > 2, 'ASSS');
+        console.log(response.fileSize > 1048576, 'ASSS');
         this.setState({
           upload: true,
           image: {

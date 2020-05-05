@@ -52,7 +52,7 @@ function ProfileScreen(props) {
             color: '#000',
             marginTop: 10,
           }}>
-          {props.route.params.name}
+          {props.userData.name}
         </Text>
       </View>
       <View style={{paddingHorizontal: 20, backgroundColor: '#fff'}}>
@@ -62,7 +62,7 @@ function ProfileScreen(props) {
             <TouchableOpacity
               onPress={() =>
                 props.navigation.navigate('EditData', {
-                  data: props.route.params,
+                  data: props.userData,
                 })
               }>
               <Text style={{fontSize: 14}}>Edit</Text>
@@ -72,7 +72,7 @@ function ProfileScreen(props) {
             <ListItem
               containerStyle={{paddingLeft: 1}}
               title={'Email'}
-              subtitle={props.route.params.email}
+              subtitle={props.userData.email}
               rightTitleStyle={{fontSize: 11}}
               titleStyle={{fontSize: 12, color: '#000'}}
               bottomDivider
@@ -81,7 +81,7 @@ function ProfileScreen(props) {
             <ListItem
               containerStyle={{paddingLeft: 1}}
               title={'Phone Number'}
-              subtitle={props.route.params.phoneNumber}
+              subtitle={props.userData.phoneNumber}
               rightTitleStyle={{fontSize: 11}}
               titleStyle={{fontSize: 12, color: '#000'}}
               bottomDivider
@@ -103,7 +103,13 @@ function ProfileScreen(props) {
   );
 }
 
+const mapStateToProps = state => {
+  return {
+    userData: state.authData.data,
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {setLogout},
 )(ProfileScreen);

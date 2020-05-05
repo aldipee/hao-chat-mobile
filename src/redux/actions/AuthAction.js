@@ -6,6 +6,7 @@ import {
   SET_LOGIN,
   SET_LOGOUT,
   UPDATE_IMAGE,
+  LOAD_USER_DATA,
   SET_USER_LOCATION,
 } from './types';
 export const getSingleData = id => async dispatch => {
@@ -43,6 +44,18 @@ export const setUserLocation = location => async dispatch => {
   } catch (err) {}
 };
 
+export const loadUserData = id => async dispatch => {
+  database()
+    .ref(`/UsersList/${id}`)
+    .once('value')
+    .then(snapshot => {
+      console.log('User data: lalaal ', snapshot.val());
+      dispatch({
+        type: LOAD_USER_DATA,
+        payload: snapshot.val(),
+      });
+    });
+};
 export const setLogin = (email, password, callback) => async dispatch => {
   auth()
     .signInWithEmailAndPassword(email, password)

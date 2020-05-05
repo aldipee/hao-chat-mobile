@@ -50,28 +50,17 @@ function Home(props) {
   };
 
   useEffect(() => {
-    Geolocation.watchPosition(
-      g => {
-        console.log(g, 'from Home');
-        setLocation(g.coords);
-        setUserLocation(g.coords);
-        database()
-          .ref(`UsersList/${props.user.uid}`)
-          .update({
-            location: g.coords,
-          })
-          .then(() => console.log('Data updated.'));
-      },
-      err => {
-        console.log(err);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0,
-        distanceFilter: 1,
-      },
-    );
+    Geolocation.watchPosition(g => {
+      console.log(g, 'from Home');
+      setLocation(g.coords);
+      setUserLocation(g.coords);
+      database()
+        .ref(`UsersList/${props.user.uid}`)
+        .update({
+          location: g.coords,
+        })
+        .then(() => console.log('Data updated.'));
+    }, null);
     database()
       .ref('UsersList/')
       .on('value', snapshot => {

@@ -8,7 +8,7 @@ Geolocation.setRNConfiguration({skipPermissionRequests: true});
 
 // Redux
 import {connect} from 'react-redux';
-import {insertNewUser} from '../redux/actions/AuthAction';
+import {insertNewUser, loadUserData} from '../redux/actions/AuthAction';
 
 function Edit(props) {
   const [fullName, setFullName] = useState('');
@@ -44,7 +44,7 @@ function Edit(props) {
   }, []);
 
   const onSubmit = () => {
-    const uid = '';
+    const uid = props.route.params.data.uid;
     database()
       .ref(`UsersList/${uid}`)
       .update({
@@ -54,6 +54,7 @@ function Edit(props) {
       })
       .then(() => {
         props.navigation.goBack();
+        props.loadUserData(uid);
         ToastAndroid.show('Data updated!', ToastAndroid.SHORT);
       });
   };
@@ -158,5 +159,5 @@ function Edit(props) {
 
 export default connect(
   null,
-  {insertNewUser},
+  {insertNewUser, loadUserData},
 )(Edit);

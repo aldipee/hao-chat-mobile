@@ -10,6 +10,7 @@ import {
 import {Card, Avatar, Button} from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
+import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {connect} from 'react-redux';
 import {setNewPicutre} from '../redux/actions/AuthAction';
@@ -23,6 +24,7 @@ class UploadImage extends Component {
       uri: this.props.route.params.photo,
     },
   };
+  componentDidMount() {}
   //Handle Choose Picture
   choosePicture = () => {
     var options = {

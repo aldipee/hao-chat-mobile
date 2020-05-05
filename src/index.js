@@ -50,18 +50,23 @@ const IndexHome = props => {
               component={Login}
               options={{headerShown: false}}
             />
-            <Stack.Screen
-              name="GettingStart"
-              component={GettingStart}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Register"
-              component={Register}
-              options={{headerShown: false}}
-            />
           </>
         )}
+        <Stack.Screen
+          name="GettingStart"
+          component={GettingStart}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Register"
+          component={Register}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="_Login"
+          component={Login}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="Contact"
           component={Contact}

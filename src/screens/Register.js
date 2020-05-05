@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ToastAndroid} from 'react-native';
 import {Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
@@ -19,6 +19,7 @@ function Register(props) {
   const [location, setLocation] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
   const [phoneNumberError, setPhoneNumberError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const checkemail = () => {
     let req = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -55,6 +56,7 @@ function Register(props) {
 
   const onSubmit = async () => {
     const data = {fullName, email, phoneNumber, password};
+    setLoading(true);
     auth()
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
@@ -81,14 +83,17 @@ function Register(props) {
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
+          setLoading(false);
+          ToastAndroid.show(
+            'That email address is already in use!',
+            ToastAndroid.SHORT,
+          );
           console.log('That email address is already in use!');
         }
 
         if (error.code === 'auth/invalid-email') {
           console.log('That email address is invalid!');
         }
-
-        console.error(error);
       });
   };
 
@@ -211,13 +216,15 @@ function Register(props) {
           <Button
             onPress={onSubmit}
             type="outline"
+            loading={loading}
+            disabled={password === '' ? true : null}
             title="Register"
             buttonStyle={{backgroundColor: '#000'}}
             titleStyle={{fontSize: 14, color: '#fff'}}
             containerStyle={{marginTop: 15, paddingHorizontal: 10}}
           />
           <Button
-            onPress={() => props.navigation.navigate('Login')}
+            onPress={() => props.navigation.navigate('_Login')}
             type="outline"
             title="Login"
             buttonStyle={{backgroundColor: '#000'}}

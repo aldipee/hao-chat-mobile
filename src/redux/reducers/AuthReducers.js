@@ -3,10 +3,12 @@ import {
   SET_LOGIN,
   UPDATE_IMAGE,
   SET_USER_LOCATION,
+  LOAD_USER_DATA,
 } from './../actions/types';
 const initialState = {
   data: {},
   isLogin: false,
+  update: false,
 };
 
 export default (state = initialState, {type, payload}) => {
@@ -14,6 +16,9 @@ export default (state = initialState, {type, payload}) => {
     case GET_USER_DATA:
       return {...state, data: payload};
 
+    case LOAD_USER_DATA: {
+      return {...state, data: payload, update: true};
+    }
     case SET_LOGIN:
       return {...state, data: payload, isLogin: true};
 
