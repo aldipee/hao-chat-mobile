@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ToastAndroid} from 'react-native';
 import {Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
@@ -12,6 +12,7 @@ function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const user = auth().currentUser;
@@ -29,8 +30,12 @@ function Login(props) {
   };
 
   const onSubmit = () => {
+    setLoading(true);
     props.setLogin(email, password, success => {
       if (success) {
+      } else {
+        ToastAndroid.show('Wrong Password', ToastAndroid.SHORT);
+        setLoading(false);
       }
     });
   };
@@ -107,6 +112,7 @@ function Login(props) {
           <Button
             type="outline"
             onPress={onSubmit}
+            loading={loading}
             title="Login"
             buttonStyle={{backgroundColor: '#000'}}
             titleStyle={{fontSize: 14, color: '#fff'}}

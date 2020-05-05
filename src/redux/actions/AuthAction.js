@@ -71,6 +71,7 @@ export const setLogin = (email, password, callback) => async dispatch => {
     })
     .catch(err => {
       console.log(err.code);
+      callback(false);
       if (err.code === 'auth/wrong-password') {
         ToastAndroid.show('Wrong Password', ToastAndroid.SHORT);
       }

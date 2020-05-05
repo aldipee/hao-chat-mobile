@@ -31,6 +31,7 @@ function Home(props) {
   };
 
   const _handleAppStateChange = nextAppState => {
+    console.log(nextAppState);
     if (nextAppState === 'background') {
       database()
         .ref(`UsersList/${props.user.uid}`)
@@ -63,22 +64,27 @@ function Home(props) {
       .on('value', snapshot => {
         const currentUser = props.user.uid;
         const data = snapshot.val();
-        const user = Object.values(data);
-        const result = user.filter(u => u.uid !== currentUser);
-        database()
-          .ref('message/')
-          .on('value', s => {
-            const newData = s.val();
-            const userWMessage = Object.keys(newData);
-            console.log(userWMessage);
-            const filter = result.filter(res =>
-              userWMessage.some(uid => res.uid === uid),
-            );
-            console.log(filter);
-            setData(filter);
-            setUsers(filter);
-            setLoading(false);
-          });
+        if (data) {
+          console.log(data);
+          const user = Object.values(data);
+          const result = user.filter(u => u.uid !== currentUser);
+
+          database()
+            .ref('message/')
+            .on('value', s => {
+              const newData = s.val();
+              if (newData) {
+                const userWMessage = Object.keys(newData);
+                console.log(userWMessage);
+                const filter = result.filter(res =>
+                  userWMessage.some(uid => res.uid === uid),
+                );
+                setData(filter);
+                setUsers(filter);
+                setLoading(false);
+              }
+            });
+        }
       });
     AppState.addEventListener('change', _handleAppStateChange);
 

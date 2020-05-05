@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {Text, View, ScrollView, StyleSheet, Platform} from 'react-native';
+import {
+  Text,
+  View,
+  ScrollView,
+  StyleSheet,
+  Platform,
+  ToastAndroid,
+} from 'react-native';
 import {Card, Avatar, Button} from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
@@ -10,6 +17,7 @@ import {setNewPicutre} from '../redux/actions/AuthAction';
 class UploadImage extends Component {
   state = {
     uri: '',
+    loading: false,
     upload: true,
     image: {
       uri: this.props.route.params.photo,
@@ -39,18 +47,26 @@ class UploadImage extends Component {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         console.log(response.fileName);
-        this.setState({
-          upload: true,
-          image: {
-            name: response.fileName,
-            type: response.type,
-            size: response.fileSize,
-            uri:
-              Platform.OS === 'android'
-                ? response.uri
-                : response.uri.replace('file://', ''),
-          },
-        });
+        if (response.fileSize > 2097152) {
+          ToastAndroid.show('Your file size too big!', ToastAndroid.SHORT);
+          this.setState({
+            loading: false,
+          });
+        } else {
+          this.setState({
+            upload: true,
+
+            image: {
+              name: response.fileName,
+              type: response.type,
+              size: response.fileSize,
+              uri:
+                Platform.OS === 'android'
+                  ? response.uri
+                  : response.uri.replace('file://', ''),
+            },
+          });
+        }
       }
     });
   };
@@ -75,6 +91,9 @@ class UploadImage extends Component {
 
   uploadPicture = async () => {
     try {
+      this.setState({
+        loading: true,
+      });
       const file = await this.uriToBlob(this.state.image.uri);
       console.log('mulai upload', file);
       storage()
@@ -165,6 +184,7 @@ class UploadImage extends Component {
               buttonStyle={{paddingHorizontal: 20}}
               onPress={this.uploadPicture}
               title="Upload"
+              loading={this.state.loading}
             />
           </View>
         </View>

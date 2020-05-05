@@ -179,10 +179,6 @@ class Rooms extends Component {
           .catch(err => {
             console.log({err}, 'ERROR IN UPLOAD IMAGEPICKER');
           });
-
-        if (!allowedExtensions.includes(extension)) {
-          return alert('That file type is not allowed.');
-        }
       }
     });
   };

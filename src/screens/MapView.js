@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 import {Card, Button} from 'react-native-elements';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {getSingleData} from '../redux/actions/AuthAction';
@@ -30,6 +30,21 @@ class MapViews extends Component {
       },
       err => {
         console.log(err);
+      },
+    );
+    Geolocation.watchPosition(
+      data => {
+        console.log(data, ' THIS IS WATCHPOSITION');
+        this.setState({
+          coords: data.coords,
+        });
+      },
+      null,
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+        distanceFilter: 1,
       },
     );
   }
@@ -77,7 +92,7 @@ class MapViews extends Component {
         <View>
           <Card
             image={{uri: this.props.route.params.photo}}
-            imageStyle={{height: 240}}>
+            imageStyle={{height: 190}}>
             <View style={{marginBottom: 10}}>
               <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                 {this.props.route.params.name}
