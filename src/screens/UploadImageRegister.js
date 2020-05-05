@@ -47,8 +47,12 @@ class UploadImage extends Component {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         console.log(response.fileName);
-        if (response.fileSize > 2097152) {
-          ToastAndroid.show('Your file size too big!', ToastAndroid.SHORT);
+        console.log(response.fileSize > 1048576, ' INI UKURAN ');
+        if (response.fileSize > 1048576) {
+          ToastAndroid.show(
+            'Your file size too big! Maximum size 1 mb',
+            ToastAndroid.SHORT,
+          );
           this.setState({
             loading: false,
           });

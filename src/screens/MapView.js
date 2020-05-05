@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 
 const Style = StyleSheet.create({
   container: {
-    height: 200,
+    height: 400,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -59,6 +59,7 @@ class MapViews extends Component {
               followsUserLocation={true}
               showsMyLocationButton={true}
               loadingEnabled={true}
+              minZoomLevel={16}
               showsUserLocation
               style={Style.map}
               initialRegion={{
@@ -84,15 +85,17 @@ class MapViews extends Component {
                 coordinate={{
                   latitude: this.props.route.params.location.latitude,
                   longitude: this.props.route.params.location.longitude,
-                }}
-              />
+                }}>
+                <Image
+                  source={{uri: this.props.route.params.photo}}
+                  style={{width: 50, height: 50, borderRadius: 30}}
+                />
+              </MapView.Marker>
             </MapView>
           )}
         </View>
         <View>
-          <Card
-            image={{uri: this.props.route.params.photo}}
-            imageStyle={{height: 190}}>
+          <Card>
             <View style={{marginBottom: 10}}>
               <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                 {this.props.route.params.name}

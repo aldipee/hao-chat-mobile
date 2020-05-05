@@ -18,6 +18,7 @@ import Contact from '../src/screens/Contact';
 import GettingStart from '../src/screens/GettingStart';
 import UploadImageRegister from '../src/screens/UploadImageRegister';
 import MapView from './screens/MapView';
+import EditData from './screens/EditData';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,11 @@ const IndexHome = props => {
               name="Home"
               component={Home}
               options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EditData"
+              component={EditData}
+              options={{headerShown: true, title: 'Edit Data'}}
             />
           </>
         ) : (

@@ -4,6 +4,7 @@ import {Text, View, ScrollView, StyleSheet, ToastAndroid} from 'react-native';
 import {Avatar, Button, ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {setLogout} from '../redux/actions/AuthAction';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 function ProfileScreen(props) {
   useFocusEffect(
@@ -56,7 +57,17 @@ function ProfileScreen(props) {
       </View>
       <View style={{paddingHorizontal: 20, backgroundColor: '#fff'}}>
         <View style={{marginVertical: 30}}>
-          <Text style={{fontSize: 16, fontWeight: 'bold'}}>Data Diri</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>Data Diri</Text>
+            <TouchableOpacity
+              onPress={() =>
+                props.navigation.navigate('EditData', {
+                  data: props.route.params,
+                })
+              }>
+              <Text style={{fontSize: 14}}>Edit</Text>
+            </TouchableOpacity>
+          </View>
           <View>
             <ListItem
               containerStyle={{paddingLeft: 1}}
