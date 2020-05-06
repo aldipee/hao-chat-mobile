@@ -59,7 +59,7 @@ class MapViews extends Component {
               followsUserLocation={true}
               showsMyLocationButton={true}
               loadingEnabled={true}
-              minZoomLevel={16}
+              minZoomLevel={0}
               showsUserLocation
               style={Style.map}
               initialRegion={{
