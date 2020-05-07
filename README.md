@@ -31,7 +31,7 @@
 
 ## Download the APK
 
-You can Download the APK [`here`](https://drive.google.com/file/d/1HpVqiSjP3N3gKwFopXstZYe1iZY1FaZk/view)
+You can Download the APK [`here`](https://drive.google.com/file/d/1jLsZqWPAHX3Xcd3Palhi2AAA6QDoPe1o/view)
 
 ## License
 

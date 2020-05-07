@@ -33,6 +33,9 @@ function Login(props) {
     setLoading(true);
     props.setLogin(email, password, success => {
       if (success) {
+        setTimeout(() => {
+          props.navigation.navigate('Home');
+        }, 2000);
       } else {
         ToastAndroid.show('Wrong Password', ToastAndroid.SHORT);
         setLoading(false);

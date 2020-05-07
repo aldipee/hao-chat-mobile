@@ -34,14 +34,14 @@ function Home(props) {
     console.log(nextAppState);
     if (nextAppState === 'background') {
       database()
-        .ref(`UsersList/${props.user.uid}`)
+        .ref(`UsersList/${props.user && props.user.uid}`)
         .update({
           status: 'Offline',
         })
         .then(() => console.log('Data updated.'));
     } else if (nextAppState === 'active') {
       database()
-        .ref(`UsersList/${props.user.uid}`)
+        .ref(`UsersList/${props.user && props.user.uid}`)
         .update({
           status: 'Online',
         })
@@ -50,49 +50,54 @@ function Home(props) {
   };
 
   useEffect(() => {
-    Geolocation.watchPosition(g => {
-      console.log(g, 'from Home');
-      setLocation(g.coords);
-      setUserLocation(g.coords);
+    if (props.user.uid) {
+      Geolocation.watchPosition(g => {
+        console.log(g, 'from Home');
+        setLocation(g.coords);
+        setUserLocation(g.coords);
+        database()
+          .ref(`UsersList/${props.user && props.user.uid}`)
+          .update({
+            location: g.coords,
+          })
+          .then(() => console.log('Data updated.'));
+      }, null);
       database()
-        .ref(`UsersList/${props.user.uid}`)
-        .update({
-          location: g.coords,
-        })
-        .then(() => console.log('Data updated.'));
-    }, null);
-    database()
-      .ref('UsersList/')
-      .on('value', snapshot => {
-        const currentUser = props.user.uid;
-        const data = snapshot.val();
-        if (data) {
-          console.log(data);
-          const user = Object.values(data);
-          const result = user.filter(u => u.uid !== currentUser);
+        .ref('UsersList/')
+        .on('value', snapshot => {
+          const currentUser = props.user.uid;
+          const data = snapshot.val();
+          if (data) {
+            console.log(data);
+            const user = Object.values(data);
+            const result = user.filter(u => u.uid !== currentUser);
 
-          database()
-            .ref('message/')
-            .on('value', s => {
-              const newData = s.val();
-              if (newData) {
-                const userWMessage = Object.keys(newData);
-                console.log(userWMessage);
-                const filter = result.filter(res =>
-                  userWMessage.some(uid => res.uid === uid),
-                );
-                setData(filter);
-                setUsers(filter);
-                setLoading(false);
-              }
-            });
-        }
-      });
-    AppState.addEventListener('change', _handleAppStateChange);
+            database()
+              .ref('message/')
+              .on('value', s => {
+                const newData = s.val();
+                if (newData) {
+                  const userWMessage = Object.keys(newData);
+                  console.log(userWMessage);
+                  const filter = result.filter(res =>
+                    userWMessage.some(uid => res.uid === uid),
+                  );
+                  setData(filter);
+                  setUsers(filter);
+                  setLoading(false);
+                }
+              });
+          }
+        });
+      AppState.addEventListener('change', _handleAppStateChange);
 
-    return () => {
-      AppState.removeEventListener('change', _handleAppStateChange);
-    };
+      return () => {
+        AppState.removeEventListener('change', _handleAppStateChange);
+      };
+    } else {
+      props.setLogout();
+      props.navigation.navigate('Home');
+    }
   }, []);
 
   return (

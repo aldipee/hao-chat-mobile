@@ -75,6 +75,11 @@ function Register(props) {
                 location,
               })
               .then(() => {
+                ToastAndroid.show(
+                  'Register success, please login to countinue!',
+                  ToastAndroid.SHORT,
+                );
+                props.navigation.navigate('_Login');
                 auth().signOut();
               })
               .catch(error => console.log(error.message));
