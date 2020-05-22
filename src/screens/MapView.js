@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import {Card, Button} from 'react-native-elements';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {getSingleData} from '../redux/actions/AuthAction';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
 
 const Style = StyleSheet.create({
@@ -59,7 +60,7 @@ class MapViews extends Component {
               followsUserLocation={true}
               showsMyLocationButton={true}
               loadingEnabled={true}
-              minZoomLevel={0}
+              minZoomLevel={15}
               showsUserLocation
               style={Style.map}
               initialRegion={{
@@ -68,15 +69,6 @@ class MapViews extends Component {
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
               }}>
-              {/* <MapView.Marker
-                image={this.props.route.params.photo}
-                coordinate={{
-                  latitude: this.props.route.params.location.latitude,
-                  longitude: this.props.route.params.location.longitude,
-                }}
-                title={'title'}
-                description={'description'}
-              /> */}
               <MapView.Marker
                 title={this.props.route.params.name}
                 description={`${
@@ -86,10 +78,27 @@ class MapViews extends Component {
                   latitude: this.props.route.params.location.latitude,
                   longitude: this.props.route.params.location.longitude,
                 }}>
-                <Image
-                  source={{uri: this.props.route.params.photo}}
-                  style={{width: 50, height: 50, borderRadius: 30}}
-                />
+                <View style={{alignItems: 'center'}}>
+                  <Image
+                    source={{uri: this.props.route.params.photo}}
+                    style={{
+                      width: 35,
+                      height: 35,
+                      borderRadius: 30,
+                      borderWidth: 2,
+                      borderColor: '#fff',
+                    }}
+                  />
+                  <Icon
+                    name="location-on"
+                    style={{
+                      zIndex: -1,
+                      color: '#0f95f5',
+                      fontSize: 65,
+                      marginTop: -42,
+                    }}
+                  />
+                </View>
               </MapView.Marker>
             </MapView>
           )}
