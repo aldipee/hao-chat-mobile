@@ -4,6 +4,8 @@ import {Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import Geolocation from '@react-native-community/geolocation';
+Geolocation.setRNConfiguration({skipPermissionRequests: true});
 
 import {connect} from 'react-redux';
 import {setLogin} from '../redux/actions/AuthAction';
@@ -13,11 +15,20 @@ function Login(props) {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState({});
 
   useEffect(() => {
     const user = auth().currentUser;
     console.log(user);
-  });
+    Geolocation.getCurrentPosition(
+      data => {
+        setLocation(data.coords);
+      },
+      err => {
+        console.log(err);
+      },
+    );
+  }, []);
 
   const checkemail = () => {
     let req = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
