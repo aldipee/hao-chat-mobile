@@ -78,7 +78,11 @@ const IndexHome = props => {
           component={Rooms}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="MapView" component={MapView} />
+        <Stack.Screen
+          name="MapView"
+          component={MapView}
+          options={{title: 'Profile details'}}
+        />
 
         <Stack.Screen
           name="Test"
